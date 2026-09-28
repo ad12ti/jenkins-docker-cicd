@@ -1,9 +1,6 @@
+```groovy
 pipeline {
     agent any
-    
-    tools {
-    sonarRunner 'SonarScanner'
-}
 
     stages {
 
@@ -16,11 +13,15 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=jenkins-docker-cicd \
-                        -Dsonar.sources=.
-                    '''
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=jenkins-docker-cicd \
+                            -Dsonar.sources=.
+                        """
+                    }
                 }
             }
         }
@@ -52,3 +53,5 @@ pipeline {
         }
     }
 }
+```
+
